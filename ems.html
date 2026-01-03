@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            padding: 30px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dashboard-title {
+            color: var(--dark);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .sidebar-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-present {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-absent {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <h2>Employee Management System</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="dashboard" id="adminDashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Admin Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="adminAvatar">A</div>
+                    <div>
+                        <div style="font-weight: 600;" id="adminName">Administrator</div>
+                        <div style="font-size: 14px; color: #666;">Management</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="sidebar">
+                    <div class="sidebar-item active" data-content="manage-employees">Manage Employees</div>
+                    <div class="sidebar-item" data-content="attendance-records">Attendance Records</div>
+                    <div class="sidebar-item" data-content="leave-requests">Leave Requests</div>
+                    <div class="sidebar-item" data-content="messages">Messages</div>
+                    <div class="sidebar-item" onclick="logout()">Logout</div>
+                </div>
+
+                <div class="main-content">
+                    <!-- Manage Employees Content -->
+                    <div id="manage-employees" class="content-section">
+                        <div class="content-header">
+                            <h2>Employee Management</h2>
+                            <button class="btn btn-success" onclick="openAddEmployeeModal()">Add Employee</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Username</th>
+                                        <th>Department</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeesTableBody">
+                                    <!-- Employees will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Records Content -->
+                    <div id="attendance-records" class="content-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Attendance Records</h2>
+                            <div>
+                                <input type="date" id="attendanceDateFilter" class="form-control" style="display: inline-block; width: auto; margin-right: 10px;">
+                                <button class="btn btn-primary" onclick="filterAttendanceRecords()">Filter</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceRecordsTableBody">
+                                    <!-- Attendance records will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Leave Requests Content -->
+                    <div id="leave-requests" class="content-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Leave Requests</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Reason</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaveRequestsTableBody">
+                                    <!-- Leave requests will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Messages Content -->
+                    <div id="messages" class="content-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Messages</h2>
+                            <button class="btn btn-primary" onclick="openSendMessageModal()">New Message</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>To</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="messagesTableBody">
+                                    <!-- Messages will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Dashboard -->
+    <div class="dashboard" id="employeeDashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Employee Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="employeeAvatar">E</div>
+                    <div>
+                        <div style="font-weight: 600;" id="employeeName">Employee Name</div>
+                        <div style="font-size: 14px; color: #666;" id="employeeDepartment">Department</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="sidebar">
+                    <div class="sidebar-item active" data-content="mark-attendance">Mark Attendance</div>
+                    <div class="sidebar-item" data-content="leave-requests-emp">Leave Requests</div>
+                    <div class="sidebar-item" data-content="messages-emp">Messages</div>
+                    <div class="sidebar-item" onclick="logout()">Logout</div>
+                </div>
+
+                <div class="main-content">
+                    <!-- Mark Attendance Content -->
+                    <div id="mark-attendance" class="content-section">
+                        <div class="content-header">
+                            <h2>Mark Attendance</h2>
+                        </div>
+                        <div style="max-width: 500px;">
+                            <div class="form-group">
+                                <label>Today's Date</label>
+                                <input type="date" id="attendanceDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="attendanceStatus" class="form-control" required>
+                                    <option value="Present">Present</option>
+                                    <option value="Absent">Absent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Message (Optional)</label>
+                                <textarea id="attendanceMessage" class="form-control" rows="3" placeholder="Any additional information..."></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="submitAttendance()">Submit Attendance</button>
+                        </div>
+                    </div>
+
+                    <!-- Leave Requests Content -->
+                    <div id="leave-requests-emp" class="content-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Leave Requests</h2>
+                            <button class="btn btn-success" onclick="openApplyLeaveModal()">Apply for Leave</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeeLeaveRequestsTableBody">
+                                    <!-- Employee's leave requests will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Messages Content -->
+                    <div id="messages-emp" class="content-section" style="display: none;">
+                        <div class="content-header">
+                            <h2>Messages</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeeMessagesTableBody">
+                                    <!-- Employee's messages will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Employee Modal -->
+    <div class="modal" id="addEmployeeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Employee</h3>
+                <button class="close-btn" onclick="closeModal('addEmployeeModal')">&times;</button>
+            </div>
+            <form id="addEmployeeForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newEmpName">Full Name</label>
+                        <input type="text" id="newEmpName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmpUsername">Username</label>
+                        <input type="text" id="newEmpUsername" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newEmpPassword">Password</label>
+                        <input type="password" id="newEmpPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmpDepartment">Department</label>
+                        <select id="newEmpDepartment" class="form-control" required>
+                            <option value="">Select Department</option>
+                            <option value="IT">IT</option>
+                            <option value="HR">HR</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newEmpEmail">Email</label>
+                    <input type="email" id="newEmpEmail" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="closeModal('addEmployeeModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Apply Leave Modal -->
+    <div class="modal" id="applyLeaveModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Apply for Leave</h3>
+                <button class="close-btn" onclick="closeModal('applyLeaveModal')">&times;</button>
+            </div>
+            <form id="applyLeaveForm">
+                <div class="form-group">
+                    <label for="leaveDate">Date</label>
+                    <input type="date" id="leaveDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="leaveReason">Reason</label>
+                    <textarea id="leaveReason" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="closeModal('applyLeaveModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Send Message Modal -->
+    <div class="modal" id="sendMessageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Send Message</h3>
+                <button class="close-btn" onclick="closeModal('sendMessageModal')">&times;</button>
+            </div>
+            <form id="sendMessageForm">
+                <div class="form-group">
+                    <label for="messageRecipient">Recipient</label>
+                    <select id="messageRecipient" class="form-control" required>
+                        <option value="">Select Employee</option>
+                        <!-- Employees will be loaded here -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="messageSubject">Subject</label>
+                    <input type="text" id="messageSubject" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="messageContent">Message</label>
+                    <textarea id="messageContent" class="form-control" rows="5" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="closeModal('sendMessageModal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Message Modal -->
+    <div class="modal" id="viewMessageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="viewMessageSubject">Message Subject</h3>
+                <button class="close-btn" onclick="closeModal('viewMessageModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>From:</label>
+                <p id="viewMessageFrom"></p>
+            </div>
+            <div class="form-group">
+                <label>Date:</label>
+                <p id="viewMessageDate"></p>
+            </div>
+            <div class="form-group">
+                <label>Content:</label>
+                <p id="viewMessageContent" style="white-space: pre-wrap;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current user data
+        let currentUser = {
+            id: null,
+            role: null,
+            username: null,
+            name: null,
+            department: null
+        };
+
+        // Sample data for demo (would be replaced with API calls in real app)
+        let employees = [
+            { id: 1, name: "John Doe", username: "john_doe", department: "IT", email: "john@example.com" },
+            { id: 2, name: "Jane Smith", username: "jane_smith", department: "HR", email: "jane@example.com" },
+            { id: 3, name: "Bob Johnson", username: "bob_johnson", department: "Finance", email: "bob@example.com" }
+        ];
+
+        let attendanceRecords = [
+            { id: 1, userId: 1, userName: "John Doe", date: "2023-11-15", status: "Present", message: "" },
+            { id: 2, userId: 2, userName: "Jane Smith", date: "2023-11-15", status: "Present", message: "" },
+            { id: 3, userId: 3, userName: "Bob Johnson", date: "2023-11-15", status: "Absent", message: "Sick leave" },
+            { id: 4, userId: 1, userName: "John Doe", date: "2023-11-16", status: "Leave_Pending", message: "Family emergency" }
+        ];
+
+        let leaveRequests = [
+            { id: 1, userId: 1, userName: "John Doe", date: "2023-11-20", status: "Leave_Pending", reason: "Family emergency" },
+            { id: 2, userId: 2, userName: "Jane Smith", date: "2023-11-22", status: "Leave_Approved", reason: "Vacation" }
+        ];
+
+        let messages = [
+            { id: 1, senderId: 1, senderName: "Admin", receiverId: 2, receiverName: "Jane Smith", subject: "Project Update", content: "Please provide an update on the project by EOD.", date: "2023-11-10", isRead: false },
+            { id: 2, senderId: 2, senderName: "Jane Smith", receiverId: 1, receiverName: "Admin", subject: "Leave Request", content: "I would like to request leave for next Monday.", date: "2023-11-12", isRead: true }
+        ];
+
+        // DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date in attendance form
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('attendanceDate').value = formattedDate;
+            document.getElementById('leaveDate').value = formattedDate;
+
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+
+            // Add employee form submission
+            document.getElementById('addEmployeeForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addEmployee();
+            });
+
+            // Apply leave form submission
+            document.getElementById('applyLeaveForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                applyLeave();
+            });
+
+            // Send message form submission
+            document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+
+            // Sidebar navigation for admin
+            document.querySelectorAll('#adminDashboard .sidebar-item:not(:last-child)').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('#adminDashboard .sidebar-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+
+                    document.querySelectorAll('#adminDashboard .content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+
+                    const contentId = this.getAttribute('data-content');
+                    document.getElementById(contentId).style.display = 'block';
+
+                    // Load data when section is shown
+                    if (contentId === 'manage-employees') {
+                        loadEmployees();
+                    } else if (contentId === 'attendance-records') {
+                        loadAttendanceRecords();
+                    } else if (contentId === 'leave-requests') {
+                        loadLeaveRequests();
+                    } else if (contentId === 'messages') {
+                        loadMessages();
+                    }
+                });
+            });
+
+            // Sidebar navigation for employee
+            document.querySelectorAll('#employeeDashboard .sidebar-item:not(:last-child)').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('#employeeDashboard .sidebar-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+
+                    document.querySelectorAll('#employeeDashboard .content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+
+                    const contentId = this.getAttribute('data-content');
+                    document.getElementById(contentId).style.display = 'block';
+
+                    // Load data when section is shown
+                    if (contentId === 'leave-requests-emp') {
+                        loadEmployeeLeaveRequests();
+                    } else if (contentId === 'messages-emp') {
+                        loadEmployeeMessages();
+                    }
+                });
+            });
+
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        });
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // In a real app, this would be an AJAX call to your Java backend
+            // For demo purposes, we'll simulate a login
+
+            // Simple validation
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Check if it's admin login
+                if (username === 'admin' && password === 'admin123') {
+                    currentUser = {
+                        id: 0,
+                        role: 'admin',
+                        username: 'admin',
+                        name: 'Administrator',
+                        department: 'Management'
+                    };
+                    showDashboard('admin');
+                    loadEmployees(); // Load initial data
+                }
+                // Check if it's employee login
+                else if (username === 'john_doe' && password === 'emp123') {
+                    currentUser = {
+                        id: 1,
+                        role: 'employee',
+                        username: 'john_doe',
+                        name: 'John Doe',
+                        department: 'IT'
+                    };
+                    showDashboard('employee');
+                }
+                else {
+                    alert('Invalid credentials. Please try again.\n\nDemo credentials:\nAdmin: admin/admin123\nEmployee: john_doe/emp123');
+                }
+            }, 500);
+        }
+
+        // Show appropriate dashboard based on role
+        function showDashboard(role) {
+            document.getElementById('loginPage').style.display = 'none';
+
+            if (role === 'admin') {
+                document.getElementById('adminDashboard').style.display = 'block';
+                document.getElementById('adminName').textContent = currentUser.name;
+                document.getElementById('adminAvatar').textContent = currentUser.name.charAt(0);
+            } else {
+                document.getElementById('employeeDashboard').style.display = 'block';
+                document.getElementById('employeeName').textContent = currentUser.name;
+                document.getElementById('employeeDepartment').textContent = currentUser.department;
+                document.getElementById('employeeAvatar').textContent = currentUser.name.charAt(0);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = {
+                id: null,
+                role: null,
+                username: null,
+                name: null,
+                department: null
+            };
+
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('employeeDashboard').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+
+            // Clear forms
+            document.getElementById('loginForm').reset();
+        }
+
+        // Open modal functions
+        function openAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').style.display = 'flex';
+        }
+
+        function openApplyLeaveModal() {
+            document.getElementById('applyLeaveModal').style.display = 'flex';
+        }
+
+        function openSendMessageModal() {
+            document.getElementById('sendMessageModal').style.display = 'flex';
+            loadMessageRecipients();
+        }
+
+        function openViewMessageModal(message) {
+            document.getElementById('viewMessageSubject').textContent = message.subject;
+            document.getElementById('viewMessageFrom').textContent = message.senderName;
+            document.getElementById('viewMessageDate').textContent = message.date;
+            document.getElementById('viewMessageContent').textContent = message.content;
+            document.getElementById('viewMessageModal').style.display = 'flex';
+        }
+
+        // Close modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.getElementById(modalId.replace('Modal', 'Form'))?.reset();
+        }
+
+        // Load employees for admin
+        function loadEmployees() {
+            const tableBody = document.getElementById('employeesTableBody');
+            tableBody.innerHTML = '';
+
+            // In a real app, this would be an API call
+            employees.forEach(emp => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${emp.id}</td>
+                    <td>${emp.name}</td>
+                    <td>${emp.username}</td>
+                    <td>${emp.department}</td>
+                    <td>${emp.email}</td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;" onclick="editEmployee(${emp.id})">Edit</button>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 14px;" onclick="deleteEmployee(${emp.id})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Add employee function
+        function addEmployee() {
+            const name = document.getElementById('newEmpName').value;
+            const username = document.getElementById('newEmpUsername').value;
+            const password = document.getElementById('newEmpPassword').value;
+            const department = document.getElementById('newEmpDepartment').value;
+            const email = document.getElementById('newEmpEmail').value;
+
+            // In a real app, this would be an AJAX call to your Java backend
+            console.log('Adding employee:', { name, username, password, department, email });
+
+            // Add to our demo data
+            const newId = employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1;
+            employees.push({
+                id: newId,
+                name,
+                username,
+                department,
+                email
+            });
+
+            // Simulate success
+            alert('Employee added successfully!');
+
+            // Refresh the table
+            loadEmployees();
+
+            // Close modal
+            closeModal('addEmployeeModal');
+        }
+
+        // Edit employee function
+        function editEmployee(id) {
+            const employee = employees.find(e => e.id === id);
+            if (!employee) return;
+
+            // In a real app, you would open a modal with the employee data pre-filled
+            // For demo, we'll just show an alert
+            alert(`Editing employee: ${employee.name}\nID: ${employee.id}\nUsername: ${employee.username}`);
+        }
+
+        // Delete employee function
+        function deleteEmployee(id) {
+            if (confirm('Are you sure you want to delete this employee?')) {
+                // In a real app, this would be an API call
+                employees = employees.filter(e => e.id !== id);
+                alert('Employee deleted successfully!');
+                loadEmployees();
+            }
+        }
+
+        // Load attendance records for admin
+        function loadAttendanceRecords() {
+            const tableBody = document.getElementById('attendanceRecordsTableBody');
+            tableBody.innerHTML = '';
+
+            // In a real app, this would be an API call
+            attendanceRecords.forEach(record => {
+                const statusClass = getStatusClass(record.status);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.userName}</td>
+                    <td>${record.date}</td>
+                    <td><span class="status-badge ${statusClass}">${formatStatus(record.status)}</span></td>
+                    <td>${record.message || '-'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Filter attendance records
+        function filterAttendanceRecords() {
+            const date = document.getElementById('attendanceDateFilter').value;
+            console.log('Filtering attendance for date:', date);
+
+            // In a real app, this would fetch filtered data from the server
+            alert('Filtering attendance for ' + (date || 'all dates'));
+        }
+
+        // Load leave requests for admin
+        function loadLeaveRequests() {
+            const tableBody = document.getElementById('leaveRequestsTableBody');
+            tableBody.innerHTML = '';
+
+            // In a real app, this would be an API call
+            leaveRequests.forEach(request => {
+                const statusClass = getStatusClass(request.status);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.userName}</td>
+                    <td>${request.date}</td>
+                    <td><span class="status-badge ${statusClass}">${formatStatus(request.status)}</span></td>
+                    <td>${request.reason}</td>
+                    <td>
+                        ${request.status === 'Leave_Pending' ? `
+                        <button class="btn btn-success" style="padding: 5px 10px; font-size: 14px;" onclick="approveLeave(${request.id})">Approve</button>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 14px;" onclick="rejectLeave(${request.id})">Reject</button>
+                        ` : '-'}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Approve leave request
+        function approveLeave(id) {
+            if (confirm('Are you sure you want to approve this leave request?')) {
+                // In a real app, this would be an API call
+                const requestIndex = leaveRequests.findIndex(r => r.id === id);
+                if (requestIndex !== -1) {
+                    leaveRequests[requestIndex].status = 'Leave_Approved';
+                    alert('Leave request approved!');
+                    loadLeaveRequests();
+                }
+            }
+        }
+
+        // Reject leave request
+        function rejectLeave(id) {
+            if (confirm('Are you sure you want to reject this leave request?')) {
+                // In a real app, this would be an API call
+                const requestIndex = leaveRequests.findIndex(r => r.id === id);
+                if (requestIndex !== -1) {
+                    leaveRequests[requestIndex].status = 'Leave_Rejected';
+                    alert('Leave request rejected!');
+                    loadLeaveRequests();
+                }
+            }
+        }
+
+        // Load messages for admin
+        function loadMessages() {
+            const tableBody = document.getElementById('messagesTableBody');
+            tableBody.innerHTML = '';
+
+            // In a real app, this would be an API call
+            messages.filter(m => m.senderId === currentUser.id).forEach(message => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${message.receiverName}</td>
+                    <td>${message.subject}</td>
+                    <td>${message.date}</td>
+                    <td><span class="status-badge" style="background-color: #e2e3e5; color: #383d41;">Sent</span></td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;" onclick="openViewMessageModal(${JSON.stringify(message).replace(/"/g, '&quot;')})">View</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load leave requests for employee
+        function loadEmployeeLeaveRequests() {
+            const tableBody = document.getElementById('employeeLeaveRequestsTableBody');
+            tableBody.innerHTML = '';
+
+            // In a real app, this would be an API call
+            leaveRequests.filter(r => r.userId === currentUser.id).forEach(request => {
+                const statusClass = getStatusClass(request.status);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.date}</td>
+                    <td><span class="status-badge ${statusClass}">${formatStatus(request.status)}</span></td>
+                    <td>${request.reason}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load messages for employee
+        function loadEmployeeMessages() {
+            const tableBody = document.getElementById('employeeMessagesTableBody');
+            tableBody.innerHTML = '';
+
+            // In a real app, this would be an API call
+            messages.filter(m => m.receiverId === currentUser.id).forEach(message => {
+                const status = message.isRead ? 'Read' : 'Unread';
+                const statusClass = message.isRead ? 'status-approved' : 'status-pending';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${message.senderName}</td>
+                    <td>${message.subject}</td>
+                    <td>${message.date}</td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 5px 10px; font-size: 14px;" onclick="openViewMessageModal(${JSON.stringify(message).replace(/"/g, '&quot;')})">View</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load recipients for message modal
+        function loadMessageRecipients() {
+            const select = document.getElementById('messageRecipient');
+            select.innerHTML = '<option value="">Select Employee</option>';
+
+            // In a real app, this would be an API call
+            employees.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = emp.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Submit attendance
+        function submitAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            const status = document.getElementById('attendanceStatus').value;
+            const message = document.getElementById('attendanceMessage').value;
+
+            // In a real app, this would be an AJAX call to your Java backend
+            console.log('Submitting attendance:', { date, status, message });
+
+            // Add to our demo data
+            attendanceRecords.push({
+                id: attendanceRecords.length + 1,
+                userId: currentUser.id,
+                userName: currentUser.name,
+                date,
+                status,
+                message
+            });
+
+            // Simulate success
+            alert('Attendance marked successfully!');
+
+            // Reset form
+            document.getElementById('attendanceMessage').value = '';
+        }
+
+        // Apply for leave
+        function applyLeave() {
+            const date = document.getElementById('leaveDate').value;
+            const reason = document.getElementById('leaveReason').value;
+
+            // In a real app, this would be an AJAX call to your Java backend
+            console.log('Applying for leave:', { date, reason });
+
+            // Add to our demo data
+            leaveRequests.push({
+                id: leaveRequests.length + 1,
+                userId: currentUser.id,
+                userName: currentUser.name,
+                date,
+                status: 'Leave_Pending',
+                reason
+            });
+
+            // Simulate success
+            alert('Leave request submitted successfully!');
+
+            // Refresh the table
+            loadEmployeeLeaveRequests();
+
+            // Close modal
+            closeModal('applyLeaveModal');
+        }
+
+        // Send message
+        function sendMessage() {
+            const recipientId = document.getElementById('messageRecipient').value;
+            const subject = document.getElementById('messageSubject').value;
+            const content = document.getElementById('messageContent').value;
+
+            if (!recipientId) {
+                alert('Please select a recipient');
+                return;
+            }
+
+            // In a real app, this would be an AJAX call to your Java backend
+            console.log('Sending message:', { recipientId, subject, content });
+
+            // Find recipient name
+            const recipient = employees.find(e => e.id == recipientId);
+            if (!recipient) {
+                alert('Recipient not found');
+                return;
+            }
+
+            // Add to our demo data
+            messages.push({
+                id: messages.length + 1,
+                senderId: currentUser.id,
+                senderName: currentUser.name,
+                receiverId: parseInt(recipientId),
+                receiverName: recipient.name,
+                subject,
+                content,
+                date: new Date().toISOString().split('T')[0],
+                isRead: false
+            });
+
+            // Simulate success
+            alert('Message sent successfully!');
+
+            // Close modal
+            closeModal('sendMessageModal');
+        }
+
+        // Helper functions
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Present': return 'status-present';
+                case 'Absent': return 'status-absent';
+                case 'Leave_Pending': return 'status-pending';
+                case 'Leave_Approved': return 'status-approved';
+                case 'Leave_Rejected': return 'status-rejected';
+                default: return '';
+            }
+        }
+
+        function formatStatus(status) {
+            switch(status) {
+                case 'Leave_Pending': return 'Pending';
+                case 'Leave_Approved': return 'Approved';
+                case 'Leave_Rejected': return 'Rejected';
+                default: return status;
+            }
+        }
+    </script>
+</body>
+</html>
